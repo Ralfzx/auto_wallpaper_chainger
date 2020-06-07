@@ -4,7 +4,28 @@ import ctypes
 from unsplash.api import Api
 import string
 import requests
-#getting wallpapers
+import subprocess
+from win10toast import ToastNotifier
+
+toaster = ToastNotifier()
+
+#_________________________________________________________
+def process_exists(process_name):
+    call = 'TASKLIST', '/FI', 'imagename eq %s' % process_name
+    # use buildin check_output right away
+    output = subprocess.check_output(call).decode()
+    # check in last line for process name
+    last_line = output.strip().split('\r\n')[-1]
+    # because Fail message could be translated
+    return last_line.lower().startswith(process_name.lower())
+#if app running
+if process_exists("valorant.exe"):
+  print("it is exiting>")
+  toaster.show_toast("Wall_py","Wallpaper wont be chainged this time!!!")
+  exit()
+else:
+  print("continuing")
+  #getting wallpapers
 
 
 os.chdir(r"C:\wallpapers")
@@ -68,4 +89,8 @@ else:
   print(todays_wall)
   this_wall = os.path.join(folder, todays_wall)
   ctypes.windll.user32.SystemParametersInfoW(20, 0, this_wall, 0)
+  toaster.show_toast("Wall_py", "wallpaper succesfuly chainged!!!")
+
+
+
 
